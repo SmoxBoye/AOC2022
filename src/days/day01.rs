@@ -5,93 +5,40 @@ use std::fs::read_to_string;
 
 pub fn solve() -> SolutionPair {
     // Your solution here...
-    let data = read_to_string("input/input01.txt").unwrap();
-    let sol1: u64 = part1(data.clone());
-    let sol2: u64 = part2(data.clone());
+    let _data = read_to_string("input/input01.txt").unwrap();
+    let vdata = vectorize_data(_data);
+    let sol1: u64 = part1(vdata.clone());
+    let sol2: u64 = part2(vdata.clone());
 
 
     (Solution::U64(sol1), Solution::U64(sol2))
 }
 
-
-fn part1(data: String) -> u64{
-    let mut biggest_elf: u64 = 0;
+fn vectorize_data(data: String) -> Vec<u64> {
     let mut current_elf: u64 = 0;
-    for line in data.lines() {
-        //print!("Current line: {line}\n");
+    let mut elf_vector = Vec::new();
+    for line in data.lines(){
         if line == ""{
+            elf_vector.push(current_elf);
             current_elf = 0;
         }
-        else
-        {
+        else {
             current_elf += line.parse::<u64>().unwrap()
         }
-        if current_elf > biggest_elf{
-            biggest_elf = current_elf;
-        }
-        //println!("Current elf rn: {current_elf}");
-        //println!("Biggest rn: {biggest_elf}");
     }
-
-    return biggest_elf;
+    elf_vector.push(current_elf);
+    elf_vector.sort();
+    return elf_vector;
 }
 
 
-fn part2(data: String) -> u64{
-    let mut biggest_elf: u64 = 0;
-    let mut second_biggest_elf:u64 = 0;
-    let mut third_biggest_elf:u64  = 0;
-    let mut current_elf:u64  = 0;
-    for line in data.lines() {
-        //print!("Current line: {line}\n");
-        if line == ""{
-            if current_elf > biggest_elf{
-                third_biggest_elf = second_biggest_elf;
-                second_biggest_elf = biggest_elf;
-                biggest_elf = current_elf;
-            }
-            else
-            {
-                if current_elf > second_biggest_elf{
-                    third_biggest_elf = second_biggest_elf;
-                    second_biggest_elf = current_elf;
-                }
-                else {
-                    if current_elf > third_biggest_elf{
-                        third_biggest_elf = current_elf;
-                    }
-                }
-            }
-            current_elf = 0;
-        }
-        else
-        {
-            current_elf += line.parse::<u64>().unwrap()
-        }
-        
-        //println!("Current elf rn: {current_elf}");
-        //println!("Biggest rn: {biggest_elf}");
-    }
-    if current_elf > biggest_elf{
-        third_biggest_elf = second_biggest_elf;
-        second_biggest_elf = biggest_elf;
-        biggest_elf = current_elf;
-    }
-    else
-    {
-        if current_elf > second_biggest_elf{
-            third_biggest_elf = second_biggest_elf;
-            second_biggest_elf = current_elf;
-        }
-        else {
-            if current_elf > third_biggest_elf{
-                third_biggest_elf = current_elf;
-            }
-        }
-    }
-    //print!("Biggest elf is: {biggest_elf}\n");
-    //print!("Second elf is: {second_biggest_elf}\n");
-    //print!("Third elf is: {third_biggest_elf}\n");
-    let total_snacks = biggest_elf + second_biggest_elf + third_biggest_elf;
-    return total_snacks;
+fn part1(data: Vec<u64>) -> u64{
+    let d_len = data.len();
+    return data[d_len - 1];
+}
+
+
+fn part2(data: Vec<u64>) -> u64{
+    let d_len = data.len();
+    return data[d_len - 1] + data[d_len -2] + data[d_len - 3];
 }
