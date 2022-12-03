@@ -38,19 +38,23 @@ fn pre_process_data(data: &String) -> Vec<char>{
     return items;
 }
 
+fn get_priority(item: char) -> u64{
+    
+    let value = item as u64;
+    let ret_val;
+    if value < 91{
+        ret_val = (value % 64) + 26;
+    }
+    else{
+        ret_val = value % 96;
+    }
+    return ret_val;
+}
 
 fn solution1(data: &Vec<char>) -> u64{
     let mut priority: u64 = 0;
     for item in data.iter(){
-        let value = *item as u64;
-        if value < 91{
-            let val = (value % 64) + 26;
-            priority += val;
-        }
-        else{
-            let val = value % 96;
-            priority += val;
-        }
+        priority += get_priority(*item);
     }
     return priority;
 }
@@ -72,24 +76,18 @@ fn solution2(data: &String) -> u64{
         let elf2 = data_iter.next().unwrap();
         let elf3 = data_iter.next().unwrap();
 
-        // Screams in O(n^3)
+        // Screams in O(log(n)*n^2)
         'outer: for item1 in elf1.chars()
         {
             for item2 in elf2.chars()
             {
-                for item3 in elf3.chars()
-                {
-                    if item1 == item2 && item2 == item3{
-                        let value = item1 as u64;
-                        if value < 91{
-                            let val = (value % 64) + 26;
-                            priority += val;
+                if item1 == item2{
+                    for item3 in elf3.chars()
+                    {
+                        if item2 == item3{
+                            priority += get_priority(item1);
+                            break 'outer;
                         }
-                        else{
-                            let val = value % 96;
-                            priority += val;
-                        }
-                        break 'outer;
                     }
                 }
             }
